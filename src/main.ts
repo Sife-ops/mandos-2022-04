@@ -1,18 +1,9 @@
-import {
-  validate,
-  isBool,
-  required,
-  ValidationRules,
-} from 'https://deno.land/x/validasaur/mod.ts';
+import { z } from 'https://deno.land/x/zod@v3.14.4/mod.ts';
 
-interface ApiResponse {
-  success: boolean;
-  data: any;
-}
-
-const ApiResponseRules: ValidationRules = {
-  success: [required, isBool],
-};
+const ApiResponse = z.object({
+  success: z.boolean(),
+  data: z.any(),
+});
 
 const apiRequest = async (endpoint: string, init: RequestInit) => {
   const url = 'http://localhost:8087';
@@ -24,17 +15,7 @@ const apiRequest = async (endpoint: string, init: RequestInit) => {
 
   const json = await response.json();
 
-  const [pass, err] = await validate(json, ApiResponseRules);
-  if (!pass) {
-    throw new Error(`api response validation error ${err}`);
-  }
-  const apiResponse = json as ApiResponse;
-
-  if (!apiResponse.success) {
-    throw new Error('request unsuccessful');
-  }
-
-  return apiResponse;
+  return ApiResponse.parse(json);
 };
 
 const response = await apiRequest('/list/object/items', { method: 'GET' });
