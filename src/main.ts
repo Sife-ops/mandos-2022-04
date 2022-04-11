@@ -1,6 +1,6 @@
-import * as c from './constant.ts';
-import { listObjectItems } from './integration/api.ts';
 import { dmenu } from './integration/dmenu.ts';
+import { listObjectItems } from './integration/bitwarden.ts';
+import * as c from './constant.ts';
 
 const items = await listObjectItems();
 
@@ -10,5 +10,5 @@ const itemsString = items.reduce((a, c, i) => {
   return `${a}${i} | ${name} ${username ? `| ${username} ` : ''}\n`;
 }, '');
 
-const action = await dmenu(itemsString);
+const action = await dmenu(c.actionsString + itemsString);
 console.log(action);
