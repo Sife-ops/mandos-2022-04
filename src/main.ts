@@ -5,7 +5,12 @@ import {
   ValidationRules,
 } from 'https://deno.land/x/validasaur/mod.ts';
 
-const ApiResponse: ValidationRules = {
+interface ApiResponse {
+  success: boolean;
+  data: any;
+}
+
+const ApiResponseRules: ValidationRules = {
   success: [required, isBool],
 };
 
@@ -19,14 +24,11 @@ const apiRequest = async (endpoint: string, init: RequestInit) => {
 
   const json = await response.json();
 
-  const [pass, err] = await validate(json, ApiResponse);
+  const [pass, err] = await validate(json, ApiResponseRules);
   if (!pass) {
     throw new Error(`api response validation error ${err}`);
   }
-  const apiResponse = json as {
-    success: boolean;
-    data: any;
-  };
+  const apiResponse = json as ApiResponse;
 
   if (!apiResponse.success) {
     throw new Error('request unsuccessful');
