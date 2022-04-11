@@ -1,29 +1,14 @@
+import * as c from './constant.ts';
 import { listObjectItems } from './integration/api.ts';
+import { dmenu } from './integration/dmenu.ts';
 
 const items = await listObjectItems();
 
-let itemsString = '';
-for (let i = 0; i < items.length; i++) {
-  const { name, login } = items[i];
+const itemsString = items.reduce((a, c, i) => {
+  const { name, login } = c;
   const username = login?.username ? login.username : null;
-  itemsString = `${itemsString}${i} | ${name} ${
-    username ? `| ${username} ` : ''
-  }\n`;
-}
+  return `${a}${i} | ${name} ${username ? `| ${username} ` : ''}\n`;
+}, '');
 
-const textEncoder = new TextEncoder();
-
-const process = Deno.run({
-  cmd: ['dmenu', '-l', '10'],
-  stdin: 'piped',
-  stdout: 'piped',
-});
-
-await process.stdin.write(textEncoder.encode(itemsString));
-process.stdin.close();
-
-const textDecoder = new TextDecoder();
-const decoded = textDecoder.decode(await process.output());
-
-const action = decoded[0];
+const action = await dmenu(itemsString);
 console.log(action);
