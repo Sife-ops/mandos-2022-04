@@ -13,7 +13,7 @@ const stdout = await dmenu(c.actionsString + itemsString);
 const action = stdout[0];
 if (action === 'C') {
   const stdout = await dmenu(c.itemTypeString);
-  console.log(stdout);
+  console.log('not implemented');
 } else if (action === 'D' || action === 'E') {
   const stdout = await dmenu(itemsString);
   const itemIndex = parseInt(stdout.split(' ')[0]);
@@ -22,10 +22,10 @@ if (action === 'C') {
   if (action === 'D') {
     const stdout = await dmenu(c.confirmString);
     if (stdout === 'Yes\n') {
-      console.log(`delete ${item}`);
+      console.log('not implemented');
     }
   } else if (action === 'E') {
-    console.log('edit');
+    console.log('not implemented');
   }
   //
 } else {
