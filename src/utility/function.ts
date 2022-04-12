@@ -1,4 +1,4 @@
-import { Item } from '../integration/bitwarden.ts';
+import { Item } from '../integration/bitwarden/api.ts';
 
 export const mktemp = async (): Promise<string> => {
   const textDecoder = new TextDecoder();
