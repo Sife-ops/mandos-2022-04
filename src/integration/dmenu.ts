@@ -1,4 +1,4 @@
-import * as c from '../constant.ts';
+import * as c from '../utility/constant.ts';
 
 export const dmenu = async (input: string) => {
   const textEncoder = new TextEncoder();

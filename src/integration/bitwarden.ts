@@ -1,4 +1,4 @@
-import * as c from '../constant.ts';
+import * as c from '../utility/constant.ts';
 import { z } from 'https://deno.land/x/zod@v3.14.4/mod.ts';
 
 const ApiResponse = z.object({

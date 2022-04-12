@@ -1,4 +1,4 @@
-import * as c from './constant.ts';
+import * as c from './utility/constant.ts';
 import * as f from './utility/function.ts';
 import { dmenu } from './integration/dmenu.ts';
 import { listObjectItems } from './integration/bitwarden.ts';
