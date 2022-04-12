@@ -1,13 +1,10 @@
+import * as bwApi from './integration/bitwarden/api.ts';
 import * as bwCli from './integration/bitwarden/cli.ts';
 import * as c from './utility/constant.ts';
 import * as f from './utility/function.ts';
 import { dmenu } from './integration/dmenu.ts';
-import { listObjectItems } from './integration/bitwarden/api.ts';
 
-// const test = await getTemplateItemLogin();
-// console.log(test);
-
-const items = await listObjectItems();
+const items = await bwApi.listObjectItems();
 const itemsString = f.reduceItems(items);
 
 const stdout = await dmenu(c.actionsString + itemsString);
@@ -32,7 +29,8 @@ if (action === 'C') {
     throw new Error('invalid input');
   }
 
-  console.log(template);
+  const item = await f.editTempFile(template);
+  await bwApi.apiPostRequest('/object/item', item);
 } else if (action === 'D' || action === 'E') {
   /*
    * delete/edit

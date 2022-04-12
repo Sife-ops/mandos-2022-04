@@ -26,6 +26,22 @@ const apiRequest = async (endpoint: string, init: RequestInit) => {
   return raw;
 };
 
+type GetEndpoint = '/generate' | '/list/object/items' | '/status';
+export const apiGetRequest = async (endpoint: GetEndpoint) => {
+  return await apiRequest(endpoint, { method: 'GET' });
+};
+
+type PostEndpoint = '/object/item';
+export const apiPostRequest = async (endpoint: PostEndpoint, body: any) => {
+  return await apiRequest(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+};
+
 const Item = z.object({
   id: z.string(),
   name: z.string(),
@@ -50,8 +66,7 @@ const ListObjectItems = z.object({
 });
 
 export const listObjectItems = async () => {
-  const raw = await apiRequest('/list/object/items', { method: 'GET' });
+  const raw = await apiGetRequest('/list/object/items');
   const listObjectItems = ListObjectItems.parse(raw);
   return listObjectItems.data.data;
 };
-
