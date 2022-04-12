@@ -24,10 +24,11 @@ make install
 
 # Usage
 
-Using Mandos requires you to be logged in (link) with Bitwarden CLI and running
+<!-- todo: add links -->
+Using Mandos requires you to be logged in with Bitwarden CLI and running
 the local Bitwarden CLI server.
 
-Check your logged-in status
+Check your logged-in status:
 ```Bash
 bw status | jq
 ```
@@ -51,7 +52,7 @@ bw serve
 
 Verify if the server is running:
 ```Bash
-curl 'http://localhost:8087/status' # should have same output as `bw status`
+curl 'http://localhost:8087/status' | jq # should have same output as `bw status`
 ```
 
 If everything is working, run:
