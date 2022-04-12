@@ -4,6 +4,9 @@ import * as c from './utility/constant.ts';
 import * as f from './utility/function.ts';
 import { dmenu } from './integration/dmenu.ts';
 
+const temp = await bwCli.getTemplateItemIdentity();
+console.log(temp);
+
 const items = await bwApi.listObjectItems();
 const itemsString = f.reduceItems(items);
 
@@ -20,17 +23,17 @@ if (action === 'C') {
   if (stdout === 'login\n') {
     template = await bwCli.getTemplateItemLogin();
   } else if (stdout === 'secure note\n') {
-    template = await bwCli.getTemplateItemSecureNote();
+    // template = await bwCli.getTemplateItemSecureNote();
   } else if (stdout === 'card\n') {
-    template = await bwCli.getTemplateItemCard();
+    // template = await bwCli.getTemplateItemCard();
   } else if (stdout === 'identity\n') {
-    template = await bwCli.getTemplateItemIdentity();
+    // template = await bwCli.getTemplateItemIdentity();
   } else {
     throw new Error('invalid input');
   }
 
-  const item = await f.editTempFile(template);
-  await bwApi.apiPostRequest('/object/item', item);
+  // const item = await f.editTempFile(template);
+  // await bwApi.apiPostRequest('/object/item', item);
 } else if (action === 'D' || action === 'E') {
   /*
    * delete/edit

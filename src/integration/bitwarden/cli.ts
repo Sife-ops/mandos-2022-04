@@ -1,8 +1,15 @@
 import * as f from '../../utility/function.ts';
+// todo: alias for package url?
+import { z } from 'https://deno.land/x/zod@v3.14.4/mod.ts';
 
-// todo: add types for cli data
-
-const getTemplate = async (s: string): Promise<any> => {
+type TemplateName =
+  | 'item'
+  | 'item.login'
+  | 'item.login.uri'
+  | 'item.identity'
+  | 'item.secureNote'
+  | 'item.card';
+export const getTemplate = async (s: TemplateName): Promise<any> => {
   // todo: use xdg spec
   const cacheDir = `${Deno.env.get('HOME')}/.cache/mandos/template`;
   const cacheFile = `${cacheDir}/${s}`;
@@ -21,57 +28,159 @@ const getTemplate = async (s: string): Promise<any> => {
   }
 };
 
-type TemplateName =
-  | 'item'
-  | 'item.login'
-  | 'item.login.uri'
-  | 'item.identity'
-  | 'item.secureNote'
-  | 'item.card';
-const getTemplateItem = async (s: TemplateName): Promise<{ name: string }> => {
-  // todo: validate
-  return await getTemplate(s);
+const Item = z.object({
+  organizationId: z.null(),
+  collectionIds: z.null(),
+  folderId: z.null(),
+  type: z.number(),
+  name: z.string(),
+  notes: z.string(),
+  favorite: z.boolean(),
+  fields: z.array(z.any()),
+  reprompt: z.number(),
+});
+
+const getTemplateItem = async () => {
+  const raw = await getTemplate('item');
+  return Item.parse(raw);
 };
 
+const Login = z.object({
+  username: z.string(),
+  password: z.string(),
+  totp: z.string(),
+});
+
+const getTemplateLogin = async () => {
+  const raw = await getTemplate('item.login');
+  return Login.parse(raw);
+};
+
+const Uri = z.object({
+  match: z.null(),
+  uri: z.string(),
+});
+
+const getTemplateUri = async () => {
+  const raw = await getTemplate('item.login.uri');
+  return Uri.parse(raw);
+};
+
+const ItemLogin = z.intersection(
+  Item,
+  z.object({
+    login: z.intersection(
+      Login,
+      z.object({
+        uris: z.array(Uri),
+      })
+    ),
+  })
+);
+
 export const getTemplateItemLogin = async () => {
-  const item = await getTemplateItem('item');
-  const login = await getTemplateItem('item.login');
-  const uri = await getTemplateItem('item.login.uri');
-  return {
+  const item = await getTemplateItem();
+  const login = await getTemplateLogin();
+  const uri = await getTemplateUri();
+
+  return ItemLogin.parse({
     ...item,
+    type: 1,
     login: {
       ...login,
       uris: [uri],
     },
-  };
+  });
 };
 
+const SecureNote = z.object({
+  // type: z.number().default(0),
+  type: z.number(),
+});
+
+const ItemSecureNote = z.intersection(
+  Item,
+  z.object({
+    secureNote: SecureNote,
+  })
+);
+
 export const getTemplateItemSecureNote = async () => {
-  const item = await getTemplateItem('item');
-  const secureNote = await getTemplateItem('item.secureNote');
-  return {
+  const item = await getTemplateItem();
+  const raw = await getTemplate('item.secureNote');
+  const secureNote = SecureNote.parse(raw);
+
+  return ItemSecureNote.parse({
     ...item,
     type: 2,
     secureNote,
-  };
+  });
 };
 
+const Card = z.object({
+  cardholderName: z.string(),
+  brand: z.string(),
+  number: z.string(),
+  expMonth: z.string(),
+  expYear: z.string(),
+  code: z.string(),
+});
+
+const ItemCard = z.intersection(
+  Item,
+  z.object({
+    card: Card,
+  })
+);
+
 export const getTemplateItemCard = async () => {
-  const item = await getTemplateItem('item');
-  const card = await getTemplateItem('item.card');
-  return {
+  const item = await getTemplateItem();
+  const raw = await getTemplate('item.card');
+  const card = Card.parse(raw);
+
+  return ItemCard.parse({
     ...item,
     type: 3,
     card,
-  };
+  });
 };
 
+const Identity = z.object({
+  title: z.string(),
+  firstName: z.string(),
+  middleName: z.string(),
+  lastName: z.string(),
+  address1: z.string(),
+  address2: z.string(),
+  address3: z.null(),
+  city: z.string(),
+  state: z.string(),
+  postalCode: z.string(),
+  country: z.string(),
+  company: z.string(),
+  email: z.string(),
+  phone: z.string(),
+  ssn: z.string(),
+  username: z.string(),
+  passportNumber: z.string(),
+  licenseNumber: z.string(),
+});
+
+const ItemIdentity = z.intersection(
+  Item,
+  z.object({
+    identity: Identity,
+  })
+);
+
 export const getTemplateItemIdentity = async () => {
-  const item = await getTemplateItem('item');
-  const identity = await getTemplateItem('item.identity');
-  return {
+  const item = await getTemplateItem();
+  const raw = await getTemplate('item.identity');
+  const identity = Identity.parse(raw);
+
+  return ItemIdentity.parse({
     ...item,
     type: 4,
     identity,
-  };
+  });
 };
