@@ -1,3 +1,5 @@
+import * as f from '../../utility/function.ts';
+
 const getTemplate = async (s: string): Promise<{ name: string }> => {
   // todo: use xdg spec
   const cacheDir = `${Deno.env.get('HOME')}/.cache/maglor/template`;
@@ -7,24 +9,12 @@ const getTemplate = async (s: string): Promise<{ name: string }> => {
     const json = Deno.readTextFileSync(cacheFile);
     return JSON.parse(json);
   } catch {
-    const textDecoder = new TextDecoder();
+    const stdout = await f.runStdout(['bw', 'get', 'template', s]);
 
-    // todo: make dry
-    const process = Deno.run({
-      cmd: ['bw', 'get', 'template', s],
-      stdout: 'piped',
-    });
-
-    const status = await process.status();
-    if (!status.success) {
-      throw new Error('command failed');
-    }
-
-    const stdout = textDecoder.decode(await process.output());
-
-    // todo: mkdir recursive
+    Deno.mkdirSync(cacheDir, { recursive: true });
     Deno.writeTextFileSync(cacheFile, stdout);
     console.log('created cache');
+
     return JSON.parse(stdout);
   }
 };
@@ -39,5 +29,35 @@ export const getTemplateItemLogin = async () => {
       ...login,
       uris: [uri],
     },
+  };
+};
+
+export const getTemplateItemSecureNote = async () => {
+  const item = await getTemplate('item');
+  const secureNote = await getTemplate('item.secureNote');
+  return {
+    ...item,
+    type: 2,
+    secureNote,
+  };
+};
+
+export const getTemplateItemCard = async () => {
+  const item = await getTemplate('item');
+  const card = await getTemplate('item.card');
+  return {
+    ...item,
+    type: 3,
+    card,
+  };
+};
+
+export const getTemplateItemIdentity = async () => {
+  const item = await getTemplate('item');
+  const identity = await getTemplate('item.identity');
+  return {
+    ...item,
+    type: 4,
+    identity,
   };
 };

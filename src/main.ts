@@ -4,8 +4,8 @@ import { dmenu } from './integration/dmenu.ts';
 import { listObjectItems } from './integration/bitwarden/api.ts';
 
 import { getTemplateItemLogin } from './integration/bitwarden/cli.ts';
-// const test = await getTemplateItemLogin();
-// console.log(test);
+const test = await getTemplateItemLogin();
+console.log(test);
 
 const items = await listObjectItems();
 const itemsString = f.reduceItems(items);
