@@ -1,13 +1,12 @@
+import * as c from '../constant.ts';
 import { z } from 'https://deno.land/x/zod@v3.14.4/mod.ts';
-
-const url = 'http://localhost:8087';
 
 const ApiResponse = z.object({
   success: z.boolean(),
 });
 
 const apiRequest = async (endpoint: string, init: RequestInit) => {
-  const response = await fetch(`${url}${endpoint}`, init);
+  const response = await fetch(`${c.url}${endpoint}`, init);
 
   if (!response.ok) {
     throw new Error(`http error ${response.status}`);
