@@ -1,11 +1,11 @@
+import * as bwCli from './integration/bitwarden/cli.ts';
 import * as c from './utility/constant.ts';
 import * as f from './utility/function.ts';
 import { dmenu } from './integration/dmenu.ts';
 import { listObjectItems } from './integration/bitwarden/api.ts';
 
-import { getTemplateItemLogin } from './integration/bitwarden/cli.ts';
-const test = await getTemplateItemLogin();
-console.log(test);
+// const test = await getTemplateItemLogin();
+// console.log(test);
 
 const items = await listObjectItems();
 const itemsString = f.reduceItems(items);
@@ -18,20 +18,21 @@ if (action === 'C') {
    * create
    */
   const stdout = await dmenu(c.itemTypeString);
-  console.log('not implemented');
 
-  let template: any = undefined;
+  let template: { name: string };
   if (stdout === 'login\n') {
-    // template = await f.getTemplateItemLogin();
+    template = await bwCli.getTemplateItemLogin();
   } else if (stdout === 'secure note\n') {
-    // template = await f.getTemplateItemSecureNote();
+    template = await bwCli.getTemplateItemSecureNote();
   } else if (stdout === 'card\n') {
-    // template = await f.getTemplateItemCard();
+    template = await bwCli.getTemplateItemCard();
   } else if (stdout === 'identity\n') {
-    // template = await f.getTemplateItemIdentity();
+    template = await bwCli.getTemplateItemIdentity();
   } else {
     throw new Error('invalid input');
   }
+
+  console.log(template);
 } else if (action === 'D' || action === 'E') {
   /*
    * delete/edit

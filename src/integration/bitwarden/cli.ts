@@ -1,8 +1,10 @@
 import * as f from '../../utility/function.ts';
 
-const getTemplate = async (s: string): Promise<{ name: string }> => {
+// todo: add types for cli data
+
+const getTemplate = async (s: string): Promise<any> => {
   // todo: use xdg spec
-  const cacheDir = `${Deno.env.get('HOME')}/.cache/maglor/template`;
+  const cacheDir = `${Deno.env.get('HOME')}/.cache/mandos/template`;
   const cacheFile = `${cacheDir}/${s}`;
 
   try {
@@ -19,10 +21,22 @@ const getTemplate = async (s: string): Promise<{ name: string }> => {
   }
 };
 
+type TemplateName =
+  | 'item'
+  | 'item.login'
+  | 'item.login.uri'
+  | 'item.identity'
+  | 'item.secureNote'
+  | 'item.card';
+const getTemplateItem = async (s: TemplateName): Promise<{ name: string }> => {
+  // todo: validate
+  return await getTemplate(s);
+};
+
 export const getTemplateItemLogin = async () => {
-  const item = await getTemplate('item');
-  const login = await getTemplate('item.login');
-  const uri = await getTemplate('item.login.uri');
+  const item = await getTemplateItem('item');
+  const login = await getTemplateItem('item.login');
+  const uri = await getTemplateItem('item.login.uri');
   return {
     ...item,
     login: {
@@ -33,8 +47,8 @@ export const getTemplateItemLogin = async () => {
 };
 
 export const getTemplateItemSecureNote = async () => {
-  const item = await getTemplate('item');
-  const secureNote = await getTemplate('item.secureNote');
+  const item = await getTemplateItem('item');
+  const secureNote = await getTemplateItem('item.secureNote');
   return {
     ...item,
     type: 2,
@@ -43,8 +57,8 @@ export const getTemplateItemSecureNote = async () => {
 };
 
 export const getTemplateItemCard = async () => {
-  const item = await getTemplate('item');
-  const card = await getTemplate('item.card');
+  const item = await getTemplateItem('item');
+  const card = await getTemplateItem('item.card');
   return {
     ...item,
     type: 3,
@@ -53,8 +67,8 @@ export const getTemplateItemCard = async () => {
 };
 
 export const getTemplateItemIdentity = async () => {
-  const item = await getTemplate('item');
-  const identity = await getTemplate('item.identity');
+  const item = await getTemplateItem('item');
+  const identity = await getTemplateItem('item.identity');
   return {
     ...item,
     type: 4,
