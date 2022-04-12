@@ -26,24 +26,26 @@ const apiRequest = async (endpoint: string, init: RequestInit) => {
   return raw;
 };
 
+const Item = z.object({
+  id: z.string(),
+  name: z.string(),
+  object: z.string(),
+  type: z.number(),
+  login: z.union([
+    z.object({
+      username: z.union([z.string(), z.null()]),
+      password: z.union([z.string(), z.null()]),
+    }),
+    z.undefined(),
+  ]),
+});
+
+export type Item = z.infer<typeof Item>;
+
 const ListObjectItems = z.object({
   data: z.object({
     object: z.string(),
-    data: z.array(
-      z.object({
-        id: z.string(),
-        name: z.string(),
-        object: z.string(),
-        type: z.number(),
-        login: z.union([
-          z.object({
-            username: z.union([z.string(), z.null()]),
-            password: z.union([z.string(), z.null()]),
-          }),
-          z.undefined(),
-        ]),
-      })
-    ),
+    data: z.array(Item),
   }),
 });
 
