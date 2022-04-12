@@ -27,7 +27,8 @@ if (action === 'C') {
   } else if (action === 'E') {
     console.log('not implemented');
   }
-  //
+} else if (action === 'S') {
+  console.log('not implemented');
 } else {
   const itemIndex = parseInt(stdout.split(' ')[0]);
   const item = items[itemIndex];
