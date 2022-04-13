@@ -4,9 +4,6 @@ import * as c from './utility/constant.ts';
 import * as f from './utility/function.ts';
 import { dmenu } from './integration/dmenu.ts';
 
-const temp = await bwCli.getTemplateItemIdentity();
-console.log(temp);
-
 const items = await bwApi.listObjectItems();
 const itemsString = f.reduceItems(items);
 
@@ -19,21 +16,24 @@ if (action === 'C') {
    */
   const stdout = await dmenu(c.itemTypeString);
 
-  let template: { name: string };
+  const editTemplate = async <T>(fn: () => T) => {
+    const template: T = await fn();
+    const item = await f.editTempFile(template);
+    // todo: validate before send?
+    await bwApi.apiPostRequest('/object/item', item);
+  };
+
   if (stdout === 'login\n') {
-    template = await bwCli.getTemplateItemLogin();
+    await editTemplate(bwCli.getTemplateItemLogin);
   } else if (stdout === 'secure note\n') {
-    // template = await bwCli.getTemplateItemSecureNote();
+    await editTemplate(bwCli.getTemplateItemSecureNote);
   } else if (stdout === 'card\n') {
-    // template = await bwCli.getTemplateItemCard();
+    await editTemplate(bwCli.getTemplateItemCard);
   } else if (stdout === 'identity\n') {
-    // template = await bwCli.getTemplateItemIdentity();
+    await editTemplate(bwCli.getTemplateItemIdentity);
   } else {
     throw new Error('invalid input');
   }
-
-  // const item = await f.editTempFile(template);
-  // await bwApi.apiPostRequest('/object/item', item);
 } else if (action === 'D' || action === 'E') {
   /*
    * delete/edit

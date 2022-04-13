@@ -9,7 +9,7 @@ type TemplateName =
   | 'item.identity'
   | 'item.secureNote'
   | 'item.card';
-export const getTemplate = async (s: TemplateName): Promise<any> => {
+export const getTemplate = async (s: TemplateName) => {
   // todo: use xdg spec
   const cacheDir = `${Deno.env.get('HOME')}/.cache/mandos/template`;
   const cacheFile = `${cacheDir}/${s}`;
@@ -32,7 +32,8 @@ const Item = z.object({
   organizationId: z.null(),
   collectionIds: z.null(),
   folderId: z.null(),
-  type: z.number(),
+  // todo: equals?
+  type: z.number().min(1).max(5),
   name: z.string(),
   notes: z.string(),
   favorite: z.boolean(),
@@ -66,7 +67,7 @@ const getTemplateUri = async () => {
   return Uri.parse(raw);
 };
 
-const ItemLogin = z.intersection(
+export const ItemLogin = z.intersection(
   Item,
   z.object({
     login: z.intersection(
@@ -94,11 +95,10 @@ export const getTemplateItemLogin = async () => {
 };
 
 const SecureNote = z.object({
-  // type: z.number().default(0),
-  type: z.number(),
+  type: z.number().min(0).max(1),
 });
 
-const ItemSecureNote = z.intersection(
+export const ItemSecureNote = z.intersection(
   Item,
   z.object({
     secureNote: SecureNote,
@@ -126,7 +126,7 @@ const Card = z.object({
   code: z.string(),
 });
 
-const ItemCard = z.intersection(
+export const ItemCard = z.intersection(
   Item,
   z.object({
     card: Card,
@@ -166,7 +166,7 @@ const Identity = z.object({
   licenseNumber: z.string(),
 });
 
-const ItemIdentity = z.intersection(
+export const ItemIdentity = z.intersection(
   Item,
   z.object({
     identity: Identity,
