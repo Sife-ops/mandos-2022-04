@@ -1,4 +1,5 @@
 import * as c from '../../utility/constant.ts';
+import { ItemType } from './cli.ts';
 import { z } from 'https://deno.land/x/zod@v3.14.4/mod.ts';
 
 const ApiResponse = z.object({
@@ -32,13 +33,16 @@ export const apiGetRequest = async (endpoint: GetEndpoint) => {
 };
 
 type PostEndpoint = '/object/item';
-export const apiPostRequest = async (endpoint: PostEndpoint, body: any) => {
+export const apiPostRequest = async (
+  endpoint: PostEndpoint,
+  item: ItemType
+): Promise<void> => {
   return await apiRequest(endpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify(item),
   });
 };
 

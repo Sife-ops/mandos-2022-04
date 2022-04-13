@@ -28,7 +28,7 @@ export const getTemplate = async (s: TemplateName) => {
   }
 };
 
-const Item = z.object({
+export const Item = z.object({
   organizationId: z.null(),
   collectionIds: z.null(),
   folderId: z.null(),
@@ -76,19 +76,21 @@ export const ItemLogin = z.intersection(
   })
 );
 
-export const getTemplateItemLogin = async () => {
+export type ItemLogin = z.infer<typeof ItemLogin>;
+
+export const getTemplateItemLogin = async (): Promise<ItemLogin> => {
   const item = await getTemplateItem();
   const login = await getTemplateLogin();
   const uri = await getTemplateUri();
 
-  return {
+  return ItemLogin.parse({
     ...item,
     type: 1,
     login: {
       ...login,
       uris: [uri],
     },
-  };
+  });
 };
 
 const SecureNote = z.object({
@@ -102,15 +104,17 @@ export const ItemSecureNote = z.intersection(
   })
 );
 
-export const getTemplateItemSecureNote = async () => {
+export type ItemSecureNote = z.infer<typeof ItemSecureNote>;
+
+export const getTemplateItemSecureNote = async (): Promise<ItemSecureNote> => {
   const item = await getTemplateItem();
   const secureNote = await getTemplate('item.secureNote');
 
-  return {
+  return ItemSecureNote.parse({
     ...item,
     type: 2,
     secureNote,
-  };
+  });
 };
 
 const Card = z.object({
@@ -129,15 +133,17 @@ export const ItemCard = z.intersection(
   })
 );
 
-export const getTemplateItemCard = async () => {
+export type ItemCard = z.infer<typeof ItemCard>;
+
+export const getTemplateItemCard = async (): Promise<ItemCard> => {
   const item = await getTemplateItem();
   const card = await getTemplate('item.card');
 
-  return {
+  return ItemCard.parse({
     ...item,
     type: 3,
     card,
-  };
+  });
 };
 
 const Identity = z.object({
@@ -168,13 +174,17 @@ export const ItemIdentity = z.intersection(
   })
 );
 
-export const getTemplateItemIdentity = async () => {
+export type ItemIdentity = z.infer<typeof ItemIdentity>;
+
+export const getTemplateItemIdentity = async (): Promise<ItemIdentity> => {
   const item = await getTemplateItem();
   const identity = await getTemplate('item.identity');
 
-  return {
+  return ItemIdentity.parse({
     ...item,
     type: 4,
     identity,
-  };
+  });
 };
+
+export type ItemType = ItemLogin | ItemSecureNote | ItemCard | ItemIdentity;

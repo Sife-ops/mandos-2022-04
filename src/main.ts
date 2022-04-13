@@ -4,6 +4,7 @@ import * as f from './utility/function.ts';
 import { createItem } from './action/create.ts';
 import { deleteItem } from './action/delete.ts';
 import { dmenu } from './integration/dmenu.ts';
+import { editItem } from './action/edit.ts';
 
 const items = await bwApi.listObjectItems();
 const itemsString = f.reduceItems(items);
@@ -18,7 +19,7 @@ if (selection === 'C') {
 } else if (selection === 'D') {
   await deleteItem(itemsString, items);
 } else if (selection === 'E') {
-  // edit
+  await editItem(itemsString, items);
 } else {
   const itemIndex = parseInt(selection);
   const item = items[itemIndex];
