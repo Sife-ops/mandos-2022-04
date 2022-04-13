@@ -27,21 +27,17 @@ export const mktemp = async () => {
   return await runStdout(['mktemp']);
 };
 
-export const editTempFile = async (a: unknown) => {
-  const tempFile = await mktemp();
-  Deno.writeTextFileSync(tempFile, JSON.stringify(a, null, 2));
-  const editor = Deno.env.get('EDITOR') || 'nano';
-  await runStdout(['st', '-e', editor, tempFile]);
-  return JSON.parse(Deno.readTextFileSync(tempFile));
-};
-
-// todo: combine with editTempFile?
 export const editTemplate = async <T, P>(
   templateFn: () => T,
   parser: (d: unknown) => P
 ) => {
   const template = await templateFn();
-  const raw = await editTempFile(template);
+  const tempFile = await mktemp();
+  Deno.writeTextFileSync(tempFile, JSON.stringify(template, null, 2));
+  const editor = Deno.env.get('EDITOR') || 'nano';
+  await runStdout(['st', '-e', editor, tempFile]);
+  const raw = JSON.parse(Deno.readTextFileSync(tempFile));
+
   try {
     const item = parser(raw);
     await apiPostRequest('/object/item', item);
