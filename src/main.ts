@@ -15,22 +15,30 @@ if (action === 'C') {
    * create
    */
   const stdout = await dmenu(c.itemTypeString);
-
-  const editTemplate = async <T>(fn: () => T) => {
-    const template: T = await fn();
-    const item = await f.editTempFile(template);
-    // todo: validate before send?
-    await bwApi.apiPostRequest('/object/item', item);
-  };
-
   if (stdout === 'login\n') {
-    await editTemplate(bwCli.getTemplateItemLogin);
+    await f.editTemplate(
+      //
+      bwCli.getTemplateItemLogin,
+      bwCli.ItemLogin.parse
+    );
   } else if (stdout === 'secure note\n') {
-    await editTemplate(bwCli.getTemplateItemSecureNote);
+    await f.editTemplate(
+      //
+      bwCli.getTemplateItemSecureNote,
+      bwCli.ItemSecureNote.parse
+    );
   } else if (stdout === 'card\n') {
-    await editTemplate(bwCli.getTemplateItemCard);
+    await f.editTemplate(
+      //
+      bwCli.getTemplateItemCard,
+      bwCli.ItemCard.parse
+    );
   } else if (stdout === 'identity\n') {
-    await editTemplate(bwCli.getTemplateItemIdentity);
+    await f.editTemplate(
+      //
+      bwCli.getTemplateItemIdentity,
+      bwCli.ItemIdentity.parse
+    );
   } else {
     throw new Error('invalid input');
   }

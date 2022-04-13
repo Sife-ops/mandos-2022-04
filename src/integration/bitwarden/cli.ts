@@ -42,8 +42,7 @@ const Item = z.object({
 });
 
 const getTemplateItem = async () => {
-  const raw = await getTemplate('item');
-  return Item.parse(raw);
+  return await getTemplate('item');
 };
 
 const Login = z.object({
@@ -53,8 +52,7 @@ const Login = z.object({
 });
 
 const getTemplateLogin = async () => {
-  const raw = await getTemplate('item.login');
-  return Login.parse(raw);
+  return await getTemplate('item.login');
 };
 
 const Uri = z.object({
@@ -63,8 +61,7 @@ const Uri = z.object({
 });
 
 const getTemplateUri = async () => {
-  const raw = await getTemplate('item.login.uri');
-  return Uri.parse(raw);
+  return await getTemplate('item.login.uri');
 };
 
 export const ItemLogin = z.intersection(
@@ -84,14 +81,14 @@ export const getTemplateItemLogin = async () => {
   const login = await getTemplateLogin();
   const uri = await getTemplateUri();
 
-  return ItemLogin.parse({
+  return {
     ...item,
     type: 1,
     login: {
       ...login,
       uris: [uri],
     },
-  });
+  };
 };
 
 const SecureNote = z.object({
@@ -107,14 +104,13 @@ export const ItemSecureNote = z.intersection(
 
 export const getTemplateItemSecureNote = async () => {
   const item = await getTemplateItem();
-  const raw = await getTemplate('item.secureNote');
-  const secureNote = SecureNote.parse(raw);
+  const secureNote = await getTemplate('item.secureNote');
 
-  return ItemSecureNote.parse({
+  return {
     ...item,
     type: 2,
     secureNote,
-  });
+  };
 };
 
 const Card = z.object({
@@ -135,14 +131,13 @@ export const ItemCard = z.intersection(
 
 export const getTemplateItemCard = async () => {
   const item = await getTemplateItem();
-  const raw = await getTemplate('item.card');
-  const card = Card.parse(raw);
+  const card = await getTemplate('item.card');
 
-  return ItemCard.parse({
+  return {
     ...item,
     type: 3,
     card,
-  });
+  };
 };
 
 const Identity = z.object({
@@ -175,12 +170,11 @@ export const ItemIdentity = z.intersection(
 
 export const getTemplateItemIdentity = async () => {
   const item = await getTemplateItem();
-  const raw = await getTemplate('item.identity');
-  const identity = Identity.parse(raw);
+  const identity = await getTemplate('item.identity');
 
-  return ItemIdentity.parse({
+  return {
     ...item,
     type: 4,
     identity,
-  });
+  };
 };
