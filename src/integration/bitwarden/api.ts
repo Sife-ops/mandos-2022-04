@@ -42,6 +42,15 @@ export const apiPostRequest = async (endpoint: PostEndpoint, body: any) => {
   });
 };
 
+export const apiDeleteRequest = async (item: {
+  id: string;
+  object: string;
+}) => {
+  return await apiRequest(`/object/${item.object}/${item.id}`, {
+    method: 'DELETE',
+  });
+};
+
 const Item = z.object({
   id: z.string(),
   name: z.string(),

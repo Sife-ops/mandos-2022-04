@@ -3,7 +3,7 @@ import { dmenu } from '../integration/dmenu.ts';
 import { editTemplate } from '../utility/function.ts';
 import { itemTypeString } from '../utility/constant.ts';
 
-export const create = async () => {
+export const createItem = async () => {
   const stdout = await dmenu(itemTypeString);
   if (stdout === 'login\n') {
     await editTemplate(c.getTemplateItemLogin, c.ItemLogin.parse);

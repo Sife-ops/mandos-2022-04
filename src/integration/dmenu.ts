@@ -1,6 +1,9 @@
 import * as c from '../utility/constant.ts';
 
-export const dmenu = async (input: string) => {
+export const dmenu = async (
+  input: string,
+  callback?: (s: string) => string
+) => {
   const textEncoder = new TextEncoder();
   const textDecoder = new TextDecoder();
 
@@ -16,5 +19,11 @@ export const dmenu = async (input: string) => {
     throw new Error('dmenu terminated by user');
   }
 
-  return textDecoder.decode(await process.output());
+  const decoded = textDecoder.decode(await process.output());
+
+  if (callback) {
+    return callback(decoded);
+  }
+
+  return decoded;
 };
