@@ -19,8 +19,6 @@ if (selection === 'C') {
   await deleteItem(itemsString, items);
 } else if (selection === 'E') {
   // edit
-} else if (selection === 'S') {
-  // status
 } else {
   const itemIndex = parseInt(selection);
   const item = items[itemIndex];
