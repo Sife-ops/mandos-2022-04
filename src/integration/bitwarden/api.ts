@@ -31,7 +31,7 @@ type PostEndpoint = '/object/item';
 export const apiPostRequest = async (
   endpoint: PostEndpoint,
   item: t.ItemType
-): Promise<void> => {
+) => {
   return await apiRequest(endpoint, {
     method: 'POST',
     headers: {
@@ -41,8 +41,18 @@ export const apiPostRequest = async (
   });
 };
 
-export const createObjectItem = async (o: t.ItemType) => {
-  await apiPostRequest('/object/item', o);
+export const apiPutRequest = async (item: t.ItemType) => {
+  return await apiRequest(`/object/${item.object}/${item.id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(item),
+  });
+};
+
+export const createObjectItem = async (item: t.ItemType) => {
+  await apiPostRequest('/object/item', item);
 };
 
 export const apiDeleteRequest = async (item: t.ItemType) => {
@@ -54,6 +64,5 @@ export const apiDeleteRequest = async (item: t.ItemType) => {
 export const listObjectItems = async () => {
   const raw = await apiGetRequest('/list/object/items');
   const listObjectItems = t.ListObjectItems.parse(raw);
-  // console.log(listObjectItems.data.data[0]);
   return listObjectItems.data.data;
 };

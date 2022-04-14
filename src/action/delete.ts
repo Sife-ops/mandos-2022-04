@@ -4,11 +4,11 @@ import { confirmString } from '../utility/constant.ts';
 import { dmenu } from '../integration/dmenu.ts';
 
 export const deleteMenu = async (s: string, items: ItemType[]) => {
-  let selection = await dmenu(s, (s) => s.split(' ')[0]);
+  const selection = await dmenu(s, (s) => s.split(' ')[0]);
   const item = items[parseInt(selection)];
 
-  selection = await dmenu(confirmString);
-  if (selection === 'Yes\n') {
+  const confirm = await dmenu(confirmString);
+  if (confirm === 'Yes\n') {
     await apiDeleteRequest(item);
   }
 };
