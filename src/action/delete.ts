@@ -1,4 +1,5 @@
-import { Item, apiDeleteRequest } from '../integration/bitwarden/api.ts';
+import { Item } from '../integration/bitwarden/type.ts';
+import { apiDeleteRequest } from '../integration/bitwarden/api.ts';
 import { confirmString } from '../utility/constant.ts';
 import { dmenu } from '../integration/dmenu.ts';
 

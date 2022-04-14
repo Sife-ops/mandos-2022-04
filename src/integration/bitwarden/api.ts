@@ -1,10 +1,5 @@
 import * as c from '../../utility/constant.ts';
-import { ItemType } from './cli.ts';
-import { z } from 'https://deno.land/x/zod@v3.14.4/mod.ts';
-
-const ApiResponse = z.object({
-  success: z.boolean(),
-});
+import * as t from './type.ts';
 
 const apiRequest = async (endpoint: string, init: RequestInit) => {
   const response = await fetch(`${c.url}${endpoint}`, init);
@@ -16,7 +11,7 @@ const apiRequest = async (endpoint: string, init: RequestInit) => {
   const raw = await response.json();
 
   try {
-    const apiResponse = ApiResponse.parse(raw);
+    const apiResponse = t.ApiResponse.parse(raw);
     if (!apiResponse.success) {
       throw new Error('request unsuccessful');
     }
@@ -35,7 +30,7 @@ export const apiGetRequest = async (endpoint: GetEndpoint) => {
 type PostEndpoint = '/object/item';
 export const apiPostRequest = async (
   endpoint: PostEndpoint,
-  item: ItemType
+  item: t.Item
 ): Promise<void> => {
   return await apiRequest(endpoint, {
     method: 'POST',
@@ -46,40 +41,15 @@ export const apiPostRequest = async (
   });
 };
 
-export const apiDeleteRequest = async (item: {
-  id: string;
-  object: string;
-}) => {
+export const apiDeleteRequest = async (item: t.Item) => {
   return await apiRequest(`/object/${item.object}/${item.id}`, {
     method: 'DELETE',
   });
 };
 
-const Item = z.object({
-  id: z.string(),
-  name: z.string(),
-  object: z.string(),
-  type: z.number(),
-  login: z.union([
-    z.object({
-      username: z.union([z.string(), z.null()]),
-      password: z.union([z.string(), z.null()]),
-    }),
-    z.undefined(),
-  ]),
-});
-
-export type Item = z.infer<typeof Item>;
-
-const ListObjectItems = z.object({
-  data: z.object({
-    object: z.string(),
-    data: z.array(Item),
-  }),
-});
-
 export const listObjectItems = async () => {
   const raw = await apiGetRequest('/list/object/items');
-  const listObjectItems = ListObjectItems.parse(raw);
+  const listObjectItems = t.ListObjectItems.parse(raw);
+  console.log(listObjectItems.data.data[0]);
   return listObjectItems.data.data;
 };

@@ -1,16 +1,16 @@
-import * as bwApi from './integration/bitwarden/api.ts';
-import * as c from './utility/constant.ts';
-import * as f from './utility/function.ts';
+import { actionsString } from './utility/constant.ts';
 import { createItem } from './action/create.ts';
 import { deleteItem } from './action/delete.ts';
 import { dmenu } from './integration/dmenu.ts';
 import { editItem } from './action/edit.ts';
+import { listObjectItems } from './integration/bitwarden/api.ts';
+import { reduceItems } from './utility/function.ts';
 
-const items = await bwApi.listObjectItems();
-const itemsString = f.reduceItems(items);
+const items = await listObjectItems();
+const itemsString = reduceItems(items);
 
 const selection = await dmenu(
-  c.actionsString + itemsString,
+  actionsString + itemsString,
   (s) => s.split(' ')[0]
 );
 

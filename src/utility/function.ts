@@ -1,7 +1,9 @@
+import * as a from '../integration/bitwarden/api.ts';
 import * as c from '../integration/bitwarden/cli.ts';
-import { apiPostRequest, Item } from '../integration/bitwarden/api.ts';
+import * as t from '../integration/bitwarden/type.ts';
+import { apiPostRequest } from '../integration/bitwarden/api.ts';
 
-export const reduceItems = (items: Item[]): string => {
+export const reduceItems = (items: t.Item[]): string => {
   return items.reduce((a, c, i) => {
     const { name, login } = c;
     const username = login?.username ? login.username : null;
@@ -28,8 +30,7 @@ export const mktemp = async () => {
   return await runStdout(['mktemp']);
 };
 
-// todo: abstraction for editing
-const editTempFile = async (o: c.ItemType) => {
+export const editTempFile = async (o: t.Item) => {
   const tempFile = await mktemp();
   // todo: change permissions
   Deno.writeTextFileSync(tempFile, JSON.stringify(o, null, 2));
@@ -85,16 +86,15 @@ export const createTemplate = async <T, P>(
   // } catch (e) {
   //   throw new Error(`Item parse error ${e}`);
   // }
-
 };
 
-export const editTemplate = async (item: c.ItemType) => {
-  const a = await editTempFile(item);
-  console.log(a);
-  // try {
-  //   const item = parser(raw);
-  //   await apiPostRequest('/object/item', item);
-  // } catch (e) {
-  //   throw new Error(`Item parse error ${e}`);
-  // }
-};
+// export const editTemplate = async (item: c.ItemType) => {
+//   const a = await editTempFile(item);
+//   console.log(a);
+//   try {
+//     const item = parser(raw);
+//     await apiPostRequest('/object/item', item);
+//   } catch (e) {
+//     throw new Error(`Item parse error ${e}`);
+//   }
+// };
