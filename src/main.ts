@@ -1,8 +1,8 @@
 import { actionsString } from './utility/constant.ts';
-import { createItem } from './action/create.ts';
-import { deleteItem } from './action/delete.ts';
+import { createMenu } from './action/create.ts';
+import { deleteMenu } from './action/delete.ts';
 import { dmenu } from './integration/dmenu.ts';
-import { editItem } from './action/edit.ts';
+import { editMenu } from './action/edit.ts';
 import { listObjectItems } from './integration/bitwarden/api.ts';
 import { reduceItems } from './utility/function.ts';
 
@@ -15,11 +15,11 @@ const selection = await dmenu(
 );
 
 if (selection === 'C') {
-  await createItem();
+  await createMenu();
 } else if (selection === 'D') {
-  await deleteItem(itemsString, items);
+  await deleteMenu(itemsString, items);
 } else if (selection === 'E') {
-  await editItem(itemsString, items);
+  await editMenu(itemsString, items);
 } else {
   const itemIndex = parseInt(selection);
   const item = items[itemIndex];

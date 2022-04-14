@@ -41,6 +41,10 @@ export const apiPostRequest = async (
   });
 };
 
+export const createObjectItem = async (o: t.ItemType) => {
+  await apiPostRequest('/object/item', o);
+};
+
 export const apiDeleteRequest = async (item: t.ItemType) => {
   return await apiRequest(`/object/${item.object}/${item.id}`, {
     method: 'DELETE',

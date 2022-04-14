@@ -21,53 +21,36 @@ const SecureNote = z.object({
   type: z.number().min(0).max(1),
 });
 
-// const Card = z.object({
-//   cardholderName: z.string(),
-//   brand: z.string(),
-//   number: z.string(),
-//   expMonth: z.string(),
-//   expYear: z.string(),
-//   code: z.string(),
-// });
+const Card = z.object({
+  cardholderName: z.string(),
+  brand: z.string(),
+  number: z.string(),
+  expMonth: z.string(),
+  expYear: z.string(),
+  code: z.string(),
+});
 
-// export const ItemCard = z.intersection(
-//   Item,
-//   z.object({
-//     card: Card,
-//   })
-// );
-
-// export type ItemCard = z.infer<typeof ItemCard>;
-
-// const Identity = z.object({
-//   title: z.string(),
-//   firstName: z.string(),
-//   middleName: z.string(),
-//   lastName: z.string(),
-//   address1: z.string(),
-//   address2: z.string(),
-//   address3: z.null(),
-//   city: z.string(),
-//   state: z.string(),
-//   postalCode: z.string(),
-//   country: z.string(),
-//   company: z.string(),
-//   email: z.string(),
-//   phone: z.string(),
-//   ssn: z.string(),
-//   username: z.string(),
-//   passportNumber: z.string(),
-//   licenseNumber: z.string(),
-// });
-
-// export const ItemIdentity = z.intersection(
-//   Item,
-//   z.object({
-//     identity: Identity,
-//   })
-// );
-
-// export type ItemIdentity = z.infer<typeof ItemIdentity>;
+// todo: change any to a specific type
+const Identity = z.object({
+  title: z.union([z.string(), z.null()]),
+  firstName: z.string(),
+  middleName: z.any(),
+  lastName: z.any(),
+  address1: z.any(),
+  address2: z.any(),
+  address3: z.null(),
+  city: z.any(),
+  state: z.any(),
+  postalCode: z.any(),
+  country: z.any(),
+  company: z.any(),
+  email: z.any(),
+  phone: z.any(),
+  ssn: z.any(),
+  username: z.any(),
+  passportNumber: z.any(),
+  licenseNumber: z.any(),
+});
 
 export const Item = z.object({
   collectionIds: z.union([z.array(z.string()), z.null(), z.undefined()]),
@@ -86,8 +69,8 @@ export const Item = z.object({
 
   login: z.union([Login, z.undefined(), z.null()]),
   secureNote: z.union([SecureNote, z.undefined(), z.null()]),
-  card: z.any(),
-  identity: z.any(),
+  card: z.union([Card, z.undefined(), z.null()]),
+  identity: z.union([Identity, z.undefined(), z.null()]),
 });
 
 export type ItemType = z.infer<typeof Item>;
