@@ -3,6 +3,9 @@ import * as t from './type.ts';
 // todo: alias for package url?
 import { z } from 'https://deno.land/x/zod@v3.14.4/mod.ts';
 
+// todo: bw template get item.field
+// todo: template placeholders
+
 type TemplateName =
   | 'item'
   | 'item.login'
@@ -10,6 +13,7 @@ type TemplateName =
   | 'item.identity'
   | 'item.secureNote'
   | 'item.card';
+// todo: rename function
 export const getTemplate = async (s: TemplateName) => {
   // todo: use xdg spec
   const cacheDir = `${Deno.env.get('HOME')}/.cache/mandos/template`;
@@ -29,55 +33,17 @@ export const getTemplate = async (s: TemplateName) => {
   }
 };
 
-export const Item = z.object({
-  organizationId: z.null(),
-  collectionIds: z.null(),
-  folderId: z.null(),
-  // todo: equals?
-  type: z.number().min(1).max(5),
-  name: z.string(),
-  notes: z.string(),
-  favorite: z.boolean(),
-  fields: z.array(z.any()),
-  reprompt: z.number(),
-});
-
 const getTemplateItem = async () => {
   return await getTemplate('item');
 };
-
-const Login = z.object({
-  username: z.string(),
-  password: z.string(),
-  totp: z.string(),
-});
 
 const getTemplateLogin = async () => {
   return await getTemplate('item.login');
 };
 
-const Uri = z.object({
-  match: z.null(),
-  uri: z.string(),
-});
-
 const getTemplateUri = async () => {
   return await getTemplate('item.login.uri');
 };
-
-export const ItemLogin = z.intersection(
-  Item,
-  z.object({
-    login: z.intersection(
-      Login,
-      z.object({
-        uris: z.array(Uri),
-      })
-    ),
-  })
-);
-
-export type ItemLogin = z.infer<typeof ItemLogin>;
 
 export const getTemplateItemLogin = async () => {
   const item = await getTemplateItem();
@@ -94,110 +60,56 @@ export const getTemplateItemLogin = async () => {
   };
 };
 
-const SecureNote = z.object({
-  type: z.number().min(0).max(1),
-});
-
-export const ItemSecureNote = z.intersection(
-  Item,
-  z.object({
-    secureNote: SecureNote,
-  })
-);
-
-export type ItemSecureNote = z.infer<typeof ItemSecureNote>;
-
-export const getTemplateItemSecureNote = async (): Promise<ItemSecureNote> => {
+export const getTemplateItemSecureNote = async () => {
   const item = await getTemplateItem();
   const secureNote = await getTemplate('item.secureNote');
 
-  return ItemSecureNote.parse({
+  return {
     ...item,
     type: 2,
     secureNote,
-  });
+  };
 };
 
-const Card = z.object({
-  cardholderName: z.string(),
-  brand: z.string(),
-  number: z.string(),
-  expMonth: z.string(),
-  expYear: z.string(),
-  code: z.string(),
-});
-
-export const ItemCard = z.intersection(
-  Item,
-  z.object({
-    card: Card,
-  })
-);
-
-export type ItemCard = z.infer<typeof ItemCard>;
-
-export const getTemplateItemCard = async (): Promise<ItemCard> => {
+export const getTemplateItemCard = async () => {
   const item = await getTemplateItem();
   const card = await getTemplate('item.card');
 
-  return ItemCard.parse({
+  return {
     ...item,
     type: 3,
     card,
-  });
+  };
 };
 
-const Identity = z.object({
-  title: z.string(),
-  firstName: z.string(),
-  middleName: z.string(),
-  lastName: z.string(),
-  address1: z.string(),
-  address2: z.string(),
-  address3: z.null(),
-  city: z.string(),
-  state: z.string(),
-  postalCode: z.string(),
-  country: z.string(),
-  company: z.string(),
-  email: z.string(),
-  phone: z.string(),
-  ssn: z.string(),
-  username: z.string(),
-  passportNumber: z.string(),
-  licenseNumber: z.string(),
-});
-
-export const ItemIdentity = z.intersection(
-  Item,
-  z.object({
-    identity: Identity,
-  })
-);
-
-export type ItemIdentity = z.infer<typeof ItemIdentity>;
-
-export const getTemplateItemIdentity = async (): Promise<ItemIdentity> => {
+export const getTemplateItemIdentity = async () => {
   const item = await getTemplateItem();
   const identity = await getTemplate('item.identity');
 
-  return ItemIdentity.parse({
+  return {
     ...item,
     type: 4,
     identity,
-  });
+  };
 };
 
-export type ItemType = ItemLogin | ItemSecureNote | ItemCard | ItemIdentity;
-
-export const getTemplateName = async (name: string) =>{
+export const getTemplateName = async (name: string) => {
   switch (name) {
     // todo: newlines
     case 'login\n':
       return await getTemplateItemLogin();
 
+    case 'secure note\n':
+      return await getTemplateItemSecureNote();
+
+    case 'card\n':
+      return await getTemplateItemCard();
+
+    case 'identity':
+      return await getTemplateItemIdentity();
+
     default:
-      console.log('todo')
+      console.log('todo');
       break;
   }
-}
+};
