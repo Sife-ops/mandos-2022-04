@@ -105,7 +105,7 @@ export const getTemplateName = async (name: string) => {
     case 'card\n':
       return await getTemplateItemCard();
 
-    case 'identity':
+    case 'identity\n':
       return await getTemplateItemIdentity();
 
     default:
