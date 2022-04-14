@@ -30,7 +30,7 @@ export const apiGetRequest = async (endpoint: GetEndpoint) => {
 type PostEndpoint = '/object/item';
 export const apiPostRequest = async (
   endpoint: PostEndpoint,
-  item: t.Item
+  item: t.ItemType
 ): Promise<void> => {
   return await apiRequest(endpoint, {
     method: 'POST',
@@ -41,7 +41,7 @@ export const apiPostRequest = async (
   });
 };
 
-export const apiDeleteRequest = async (item: t.Item) => {
+export const apiDeleteRequest = async (item: t.ItemType) => {
   return await apiRequest(`/object/${item.object}/${item.id}`, {
     method: 'DELETE',
   });
@@ -50,6 +50,6 @@ export const apiDeleteRequest = async (item: t.Item) => {
 export const listObjectItems = async () => {
   const raw = await apiGetRequest('/list/object/items');
   const listObjectItems = t.ListObjectItems.parse(raw);
-  console.log(listObjectItems.data.data[0]);
+  // console.log(listObjectItems.data.data[0]);
   return listObjectItems.data.data;
 };

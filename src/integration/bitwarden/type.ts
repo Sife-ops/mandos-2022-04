@@ -32,7 +32,7 @@ export const Item = z.object({
   identity: z.any(),
 });
 
-export type Item = z.infer<typeof Item>;
+export type ItemType = z.infer<typeof Item>;
 
 export const ApiResponse = z.object({
   success: z.boolean(),

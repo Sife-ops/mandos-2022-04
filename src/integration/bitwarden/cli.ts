@@ -1,4 +1,5 @@
 import * as f from '../../utility/function.ts';
+import * as t from './type.ts';
 // todo: alias for package url?
 import { z } from 'https://deno.land/x/zod@v3.14.4/mod.ts';
 
@@ -22,7 +23,7 @@ export const getTemplate = async (s: TemplateName) => {
 
     Deno.mkdirSync(cacheDir, { recursive: true });
     Deno.writeTextFileSync(cacheFile, stdout);
-    console.log('created cache');
+    console.log(`created cache file ${cacheFile}`);
 
     return JSON.parse(stdout);
   }
@@ -78,19 +79,19 @@ export const ItemLogin = z.intersection(
 
 export type ItemLogin = z.infer<typeof ItemLogin>;
 
-export const getTemplateItemLogin = async (): Promise<ItemLogin> => {
+export const getTemplateItemLogin = async () => {
   const item = await getTemplateItem();
   const login = await getTemplateLogin();
   const uri = await getTemplateUri();
 
-  return ItemLogin.parse({
+  return {
     ...item,
     type: 1,
     login: {
       ...login,
       uris: [uri],
     },
-  });
+  };
 };
 
 const SecureNote = z.object({
@@ -188,3 +189,15 @@ export const getTemplateItemIdentity = async (): Promise<ItemIdentity> => {
 };
 
 export type ItemType = ItemLogin | ItemSecureNote | ItemCard | ItemIdentity;
+
+export const getTemplateName = async (name: string) =>{
+  switch (name) {
+    // todo: newlines
+    case 'login\n':
+      return await getTemplateItemLogin();
+
+    default:
+      console.log('todo')
+      break;
+  }
+}
