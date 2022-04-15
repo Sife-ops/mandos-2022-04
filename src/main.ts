@@ -24,9 +24,6 @@ if (selection === 'C') {
   const itemIndex = parseInt(selection);
   const item = items[itemIndex];
   if (item.login) {
-    const { password, username } = item.login;
-    console.log(username);
-    console.log(password);
-    // todo: shell copy to clipboard
+    console.log(JSON.stringify(item.login));
   }
 }
